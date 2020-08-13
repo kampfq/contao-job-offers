@@ -1,5 +1,5 @@
 {
-    "name": "web-ex-machina/contao-job-offers",
+    "name": "kampfq/contao-job-offers",
     "description": "Job Offers for Contao Open Source CMS",
      "keywords": ["frontend", "job", "application", "offer", "webexmachina", "module", "contao"],
     "type": "contao-bundle",
@@ -9,12 +9,17 @@
             "name": "Web ex Machina",
             "homepage": "https://www.webexmachina.fr",
             "role":"Developer"
+        },
+        {
+            "name": "Benjamin Issleib",
+            "homepage": "https://benjamin.issleib.org",
+            "role":"Developer"
         }
     ],
     "support":{
         "website":"https://www.webexmachina.fr/",
-        "issues":"https://github.com/web-ex-machina/contao-job-offers/issues",
-        "source":"https://github.com/web-ex-machina/contao-job-offers"
+        "issues":"https://github.com/kampfq/contao-job-offers/issues",
+        "source":"https://github.com/kampfq/contao-job-offers"
     },
     "require": {
         "php": "^7.3",
