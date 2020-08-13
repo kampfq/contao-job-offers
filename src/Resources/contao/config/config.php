@@ -30,6 +30,7 @@ array_insert(
     [
         'wem-job-offers' => [
             'jobslist' => 'WEM\JobOffersBundle\Module\ModuleJobsList',
+            'jobsdetail' => 'WEM\JobOffersBundle\Module\ModuleJobsDetail',
         ],
     ]
 );

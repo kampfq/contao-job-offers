@@ -17,10 +17,19 @@ $this->loadDataContainer('tl_content');
 // Add palettes to tl_module
 $GLOBALS['TL_DCA']['tl_module']['palettes']['jobslist'] = '
     {title_legend},name,headline,type;
-    {config_legend},job_displayTeaser,job_applicationForm;numberOfItems,skipFirst,perPage;
+    {config_legend},job_displayTeaser,job_applicationDetail;
     {template_legend:hide},job_template,customTpl;
     {expert_legend:hide},guests,cssID
 ';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['jobsdetail'] = '
+    {title_legend},name,headline,type;
+    {config_legend},job_applicationForm;
+    {template_legend:hide},customTpl;
+    {expert_legend:hide},guests,cssID
+';
+
+
+
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['job_displayTeaser'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_module']['job_displayTeaser'],
@@ -40,6 +49,14 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['job_applicationForm'] = [
     ],
     'sql' => "int(10) unsigned NOT NULL default '0'",
 ];
+$GLOBALS['TL_DCA']['tl_module']['fields']['job_applicationDetail'] = [
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['job_applicationDetail'],
+    'exclude' => true,
+    'inputType'             => 'pageTree',
+    'eval'                  => ['fieldType'=>'radio', 'tl_class'=>'clr w50'],
+    'sql'                   => 'blob NULL'
+];
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['job_template'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_module']['job_template'],
     'default' => 'job_default',

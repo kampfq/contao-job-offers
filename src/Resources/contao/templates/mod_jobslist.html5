@@ -1,118 +1,65 @@
 <?php $this->extend('block_unsearchable'); ?>
 
 <?php $this->block('content'); ?>
-  <?php if($this->locationFilters || $this->fieldFilters): ?>
-  	<div class="filters">
-  		<form action="{{env::request}}" method="GET" class="row">
-			<?php if($this->fieldFilters): ?>
-			<div class="filter col-5">
-				<select name="field">
-					<option value=""><?= $GLOBALS['TL_LANG']['WEM']['JOBOFFERS']['allFields'] ?></option>
-					<?php foreach($this->fieldFilters as $field): ?>
-					<option value="<?= $field ?>"<?= (\Input::get('field') && \Input::get('field') == $field) ? " selected" : '' ?>><?= $field ?></option>
-					<?php endforeach; ?>
-				</select>
-			</div>
-			<?php endif; ?>
+  <?php if($this->locationFilters || $this->fieldFilters || countryFilters): ?>
 
-			<?php if($this->locationFilters): ?>
-			<div class="filter col-5">
-				<select name="location">
-					<option value=""><?= $GLOBALS['TL_LANG']['WEM']['JOBOFFERS']['allLocations'] ?></option>
-					<?php foreach($this->locationFilters as $value => $location): ?>
-					<option value="<?= $value ?>"<?= (\Input::get('location') && \Input::get('location') == $value) ? " selected" : '' ?>><?= $location ?></option>
-					<?php endforeach; ?>
-				</select>
-			</div>
-			<?php endif; ?>
+<div class="ce_ct_wrapperStart tabs ce_wrapper block">
 
-			<div class="col-2">
-				<input type="submit" class="btn m-0 w-100" value="<?= $GLOBALS['TL_LANG']['WEM']['JOBOFFERS']['filter'] ?>" />
-			</div>
-		</form>
-  	</div>
-  <?php endif; ?>
+<?php $i = 0; foreach($this->locationFilters as $value => $location): ?>
+<input id="jobs-<?= $value ?>" type="radio" name="tabs377" <?php if($i == 0 ): ?> checked="checked"<?php endif; $i++;?>/>
+	<?php $i++; ?>
+	<?php endforeach; ?>
 
-  <?php if (empty($this->articles)): ?>
-    <p class="empty"><?= $this->empty ?></p>
-  <?php else: ?>
-  	
-  	<div class="row">
-    <?= implode('', $this->articles) ?>
+<ul class="ce_tabsNavElement tab tab-block">
+	<?php $i = 0;foreach($this->locationFilters as $value => $location): ?>
+	<li class="tab-item<?php if($i == 0): ?> active<?php endif; ?>">
+		<a href="#"><label for="jobs-<?= $value ?>"><?= $location ?></label></a>
+	</li>
+	<?php $i++; ?>
+	<?php endforeach; ?>
+</ul>
+
+
+
+<style>
+																													#jobs-<?= $value ?>:checked ~ figure .jobs-<?= $value ?><?php if(count($this->locationFilters) != $i): ?>,<?php endif; ?>
+	<?php $i = 1; foreach($this->locationFilters as $value => $location): ?>
+	#jobs-<?= $value ?> ~ figure .jobs-<?= $value ?><?php if(count($this->locationFilters) != $i): ?>,<?php endif; ?>
+	<?php $i++; endforeach; ?> { display: none; }
+
+	<?php $i = 1; foreach($this->locationFilters as $value => $location): ?>
+	#jobs-<?= $value ?>:checked ~ figure .jobs-<?= $value ?><?php if(count($this->locationFilters) != $i): ?>,<?php endif; ?>
+	<?php $i++; endforeach; ?> { display: block; }
+
+	<?php $i = 1; foreach($this->locationFilters as $value => $location): ?>
+	#jobs-<?= $value ?>:checked ~ .tab label[for="jobs-<?= $value ?>"]:after<?php if(count($this->locationFilters) != $i): ?>,<?php endif; ?>
+	<?php $i++; endforeach; ?> { display: none; }
+
+	<?php $i = 1; foreach($this->locationFilters as $value => $location): ?>
+	#jobs-<?= $value ?>:checked ~ .tab label[for="jobs-<?= $value ?>"]<?php if(count($this->locationFilters) != $i): ?>,<?php endif; ?>
+	<?php $i++; endforeach; ?> { border-bottom: 6px solid #F6D365; }
+</style>
+
+<figure class="ce_tabsStartElement ">
+
+	<?php foreach($this->jobsByLocation as $value => $jobs): ?>
+	<div class="ce_text jobs-<?= $value ?>  block">
+		<?php foreach($jobs as $job): ?>
+		<?= $job ?>
+
+		<?php endforeach; ?>
+
+
 	</div>
-    <?= $this->pagination ?>
+	<?php endforeach; ?>
 
-    <script type="text/javascript">
-    	<?php if($this->openModalOnLoad): ?>
-    	window.addEventListener('load', function() {
-			setTimeout(function(){
-				var modal = new app.ModalFW({
-		          name : 'jobApplyModal',
-		          content: <?= $this->openModalOnLoadContent ?>,
-		          onClose: function(){
-		            modal.destroy();
-		          }
-		        }).open();
-		    },10);
-		});
-    	<?php endif; ?>
+</figure>
+</div>
+<?php $GLOBALS['ZERO_ONE_STYLES'][] = '_tabs'; ?>
+<?php $GLOBALS['ZERO_ONE_STYLES'][] = 'contao/tabs'; ?>
 
-		var openDetailsModal = function(btn){
-		    return new Promise(function(resolve,reject){
-		      var job = btn.$el.attr('data-job');
-		      $.ajax({
-		        timeout: 10000,
-		        url: window.location.pathname,
-		        type: 'post',
-		        data:{
-		          'TL_AJAX': 1,
-		          'action': 'seeDetails',
-		          'job': job
-		        },
-		      }).done(function(html){
-		        var modal = new app.ModalFW({
-		          name : 'jobDetailsModal',
-		          content: html,
-		          onClose: function(){
-		            modal.destroy();
-		          }
-		        }).open();
-		        resolve();
-		      }).fail(function(jqXHR, textStatus){
-		        console.log(jqXHR, textStatus);
-		        reject();
-		      });
-		    });
-	    }
 
-	    var openApplicationModal = function(btn){
-		    return new Promise(function(resolve,reject){
-		      var job = btn.$el.attr('data-job');
-		      $.ajax({
-		        timeout: 10000,
-		        url: window.location.pathname,
-		        type: 'post',
-		        data:{
-		          'TL_AJAX': 1,
-		          'action': 'apply',
-		          'job': job
-		        },
-		      }).done(function(html){
-		        var modal = new app.ModalFW({
-		          name : 'jobApplyModal',
-		          content: html,
-		          onClose: function(){
-		            modal.destroy();
-		          }
-		        }).open();
-		        resolve();
-		      }).fail(function(jqXHR, textStatus){
-		        console.log(jqXHR, textStatus);
-		        reject();
-		      });
-		    });
-	    }
-    </script>
   <?php endif; ?>
+
 
 <?php $this->endblock(); ?>

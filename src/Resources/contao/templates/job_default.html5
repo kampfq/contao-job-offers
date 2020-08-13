@@ -16,14 +16,12 @@
 				<?= $this->job_displayTeaser ? $this->text : '' ?>
 			</div>
 		</div>
-		<?php if($this->blnDisplayApplyButton || !$this->job_displayTeaser): ?>
+		<?php if($this->blnDisplayDetailButton || !$this->job_displayTeaser): ?>
 		<div class="block-list__footer">
 			<div class="block-list__author">
-				<?php if(!$this->job_displayTeaser): ?>
-				<button class="btn-load" data-process="openDetailsModal" data-job="<?= $this->id ?>" data-icon="false" data-result="false"><?= $GLOBALS['TL_LANG']['WEM']['JOBOFFERS']['seeOffer'] ?></button>
-				<?php endif; ?>
-				<?php if($this->blnDisplayApplyButton): ?>
-				<button class="btn-load" data-process="openApplicationModal" data-job="<?= $this->id ?>" data-icon="false" data-result="false"><?= $GLOBALS['TL_LANG']['WEM']['JOBOFFERS']['apply'] ?></button>
+
+				<?php if($this->blnDisplayDetailButton): ?>
+				<a class="btn btn-primary" href="<?= $this-> detailUrl ?>" data-icon="false" data-result="false"><?= $GLOBALS['TL_LANG']['WEM']['JOBOFFERS']['apply'] ?></a>
 				<?php endif; ?>
 			</div>
 		</div>
