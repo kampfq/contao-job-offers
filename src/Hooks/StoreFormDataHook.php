@@ -14,14 +14,18 @@ declare(strict_types=1);
 
 namespace WEM\JobOffersBundle\Hooks;
 
+use WEM\JobOffersBundle\Model\Job as JobModel;
+
 class StoreFormDataHook
 {
     public function storeFormData($arrSet, $objForm)
     {
         try {
-            if ('job-offer-application' === $objForm->formID) {
+            if ('job-offer-application' === $objForm->alias) {
                 // Unset fields who are not in tl_wem_job_application table
-                $strCode = $arrSet['code'];
+                $objJob = JobModel::findByPk($arrSet['pid']);
+
+                $strCode = $objJob->code;
                 unset($arrSet['recipient'], $arrSet['code'], $arrSet['title']);
 
                 // Convert files path into uuid
@@ -40,8 +44,8 @@ class StoreFormDataHook
                     );
                     $strFilename = str_replace($objFile->name, $strNewName, $objFile->path);
 
-                    $objFile = new \File($objFile->path);
-                    $objFile->renameTo($strFilename);
+                    $objFileCV = new \File($objFile->path);
+                    $objFileCV->renameTo($strFilename);
                 }
                 if ($arrSet['applicationLetter'] && $objFile = \FilesModel::findOneByPath($arrSet['applicationLetter'])) {
                     $arrSet['applicationLetter'] = $objFile->uuid;
@@ -58,9 +62,42 @@ class StoreFormDataHook
                     );
                     $strFilename = str_replace($objFile->name, $strNewName, $objFile->path);
 
-                    $objFile = new \File($objFile->path);
-                    $objFile->renameTo($strFilename);
+                    $objFileAP = new \File($objFile->path);
+                    $objFileAP->renameTo($strFilename);
                 }
+
+
+                //generate XML
+                $strNewName = sprintf(
+                    'files/applications/%s/al_%s_%s_%s.%s',
+                    $strCode,
+                    \StringUtil::generateAlias($arrSet['lastname']),
+                    \StringUtil::generateAlias($arrSet['firstname']),
+                    date('Y-m-d_H-i'),
+                   'xml'
+                );
+
+                $xml_header = '<?xml version="1.0" encoding="UTF-8"?><application></application>';
+                $xml = new \SimpleXMLElement($xml_header);
+
+                foreach ($arrSet as $key => $value) {
+                    if($key === 'cv'){
+                        $xml->addChild($key, $objFileCV -> name);
+
+                    } elseif ($key === 'applicationLetter'){
+                        $xml->addChild($key, $objFileAP -> name);
+
+                    } else {
+                        $xml->addChild($key, $value);
+                    }
+                }
+
+                $meh = new \File($strNewName);
+
+                $dom = dom_import_simplexml($xml)->ownerDocument;
+                $dom->formatOutput = true;
+                $meh -> write($dom->saveXML());
+                $meh -> close();
 
                 // Clean the session
                 $objSession = \Session::getInstance();
