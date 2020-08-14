@@ -35,8 +35,7 @@ class StoreFormDataHook
                     // Move file into a subfolder with a clearer name
                     // Rule: {form_folder}/{job_code}/{cv_lastname_firtname}
                     $strNewName = sprintf(
-                        '%s/cv_%s_%s_%s.%s',
-                        $strCode,
+                        'cv_%s_%s_%s.%s',
                         \StringUtil::generateAlias($arrSet['lastname']),
                         \StringUtil::generateAlias($arrSet['firstname']),
                         date('Y-m-d_H-i'),
@@ -53,8 +52,7 @@ class StoreFormDataHook
                     // Move file into a subfolder with a clearer name
                     // Rule: {form_folder}/{job_code}/{cv_lastname_firtname}
                     $strNewName = sprintf(
-                        '%s/al_%s_%s_%s.%s',
-                        $strCode,
+                        'al_%s_%s_%s.%s',
                         \StringUtil::generateAlias($arrSet['lastname']),
                         \StringUtil::generateAlias($arrSet['firstname']),
                         date('Y-m-d_H-i'),
@@ -69,8 +67,7 @@ class StoreFormDataHook
 
                 //generate XML
                 $strNewName = sprintf(
-                    'files/applications/%s/al_%s_%s_%s.%s',
-                    $strCode,
+                    'files/applications/data_%s_%s_%s.%s',
                     \StringUtil::generateAlias($arrSet['lastname']),
                     \StringUtil::generateAlias($arrSet['firstname']),
                     date('Y-m-d_H-i'),
